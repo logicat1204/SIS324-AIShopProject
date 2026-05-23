@@ -7,6 +7,10 @@ import base64
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+from pathlib import Path
 
 from models import (
     SearchQuery, StoreCreate, ProductCreate, 
@@ -29,6 +33,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Servir archivos estáticos del frontend (para producción)
+frontend_build_path = Path(__file__).parent.parent / "frontend" / "dist"
+if frontend_build_path.exists():
+    app.mount("/assets", StaticFiles(directory=frontend_build_path / "assets"), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        # No servir archivos de API
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        
+        # Para todas las demás rutas, servir index.html (SPA)
+        html_file = frontend_build_path / "index.html"
+        if html_file.exists():
+            return FileResponse(html_file)
+        else:
+            raise HTTPException(status_code=404, detail="Frontend not built")
 
 # --- SISTEMA DE AUTENTICACIÓN JWT PERSONALIZADO (HMAC-SHA256) ---
 JWT_SECRET = "sucreshop_jwt_super_secret_key_2026_bolivia"

@@ -133,9 +133,9 @@ function App() {
     return headers;
   };
 
-  const fetchPublicStores = async () => {
+   const fetchPublicStores = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/stores');
+      const response = await fetch('/api/stores');
       const data = await response.json();
       if (response.ok) {
         setAllStores(data);
@@ -148,7 +148,7 @@ function App() {
   const fetchCatalog = async (query = '') => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/search', {
+      const response = await fetch('/api/search', {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({ query: query })
@@ -168,7 +168,7 @@ function App() {
   const fetchSellerData = async () => {
     try {
       // 1. Tiendas del vendedor
-      const responseStores = await fetch('http://localhost:8000/api/stores', {
+      const responseStores = await fetch('/api/stores', {
         headers: getHeaders()
       });
       const storesData = await responseStores.json();
@@ -180,7 +180,7 @@ function App() {
       }
 
       // 2. Productos
-      const responseProducts = await fetch('http://localhost:8000/api/products', {
+      const responseProducts = await fetch('/api/products', {
         headers: getHeaders()
       });
       const productsData = await responseProducts.json();
@@ -194,13 +194,13 @@ function App() {
 
   const fetchAdminPending = async () => {
     try {
-      const respStores = await fetch('http://localhost:8000/api/admin/pending-stores', {
+      const respStores = await fetch('/api/admin/pending-stores', {
         headers: getHeaders()
       });
       const stores = await respStores.json();
       if (respStores.ok) setPendingStores(stores);
 
-      const respProds = await fetch('http://localhost:8000/api/admin/pending-products', {
+      const respProds = await fetch('/api/admin/pending-products', {
         headers: getHeaders()
       });
       const prods = await respProds.json();
@@ -212,7 +212,7 @@ function App() {
 
   const fetchOrderHistory = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/orders', {
+      const response = await fetch('/api/orders', {
         headers: getHeaders()
       });
       const data = await response.json();
@@ -240,7 +240,7 @@ function App() {
           showAlert('error', 'Por favor ingresa tu nombre completo.');
           return;
         }
-        const response = await fetch('http://localhost:8000/api/auth/register', {
+        const response = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -259,7 +259,7 @@ function App() {
         }
       } else {
         // Login
-        const response = await fetch('http://localhost:8000/api/auth/login', {
+        const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -310,7 +310,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/stores', {
+      const response = await fetch('/api/stores', {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
@@ -351,7 +351,7 @@ function App() {
     if (prodSize) attributes['size'] = prodSize;
 
     try {
-      const response = await fetch('http://localhost:8000/api/products', {
+      const response = await fetch('/api/products', {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
@@ -401,9 +401,9 @@ function App() {
 
     try {
       const endpoint = type === 'store' 
-        ? `http://localhost:8000/api/admin/approve-store/${id}` 
-        : `http://localhost:8000/api/admin/approve-product/${id}`;
-        
+        ? `/api/admin/approve-store/${id}` 
+        : `/api/admin/approve-product/${id}`;
+      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: getHeaders(),
@@ -445,7 +445,7 @@ function App() {
 
     setQrLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/orders', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
